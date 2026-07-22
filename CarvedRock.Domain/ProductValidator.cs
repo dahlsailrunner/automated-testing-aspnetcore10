@@ -6,7 +6,7 @@ namespace CarvedRock.Domain;
 
 public class NewProductValidator : AbstractValidator<NewProductModel>
 {
-    private readonly ICarvedRockRepository _repo;
+    //private readonly ICarvedRockRepository _repo;
 
     internal record PriceRange(double Min, double Max);
     internal Dictionary<string, PriceRange> _priceRanges = new()
@@ -16,15 +16,16 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         { "equip", new PriceRange(20, 150) }
     };
 
-    public NewProductValidator(ICarvedRockRepository repo)
+    public NewProductValidator()
+    //public NewProductValidator(ICarvedRockRepository repo)
     {
-        _repo = repo;
+        //_repo = repo;
 
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
             .NotNull().WithMessage("{PropertyName} is required.")
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")
-            .MustAsync(NameIsUnique).WithMessage("A product with the same name already exists.");
+            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
+            //.MustAsync(NameIsUnique).WithMessage("A product with the same name already exists.");
 
         RuleFor(p => p.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -52,8 +53,8 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         return priceToValidate >= range.Min && priceToValidate <= range.Max;
     }
 
-    private async Task<bool> NameIsUnique(string name, CancellationToken token)
-    {
-        return await _repo.IsProductNameUniqueAsync(name);
-    }
+    // private async Task<bool> NameIsUnique(string name, CancellationToken token)
+    // {
+    //     return await _repo.IsProductNameUniqueAsync(name);
+    // }
 }
