@@ -1,5 +1,3 @@
-using Microsoft.Extensions.Hosting;
-
 var builder = DistributedApplication.CreateBuilder(args);
 
 #pragma warning disable ASPIRECOMPUTE003
@@ -7,7 +5,6 @@ var registry = builder.AddContainerRegistry("registry", "carvedrock.docker.com")
 builder.AddKubernetesEnvironment("cr-k8s").WithContainerRegistry(registry);
 
 var db = builder.AddPostgres("db")
-    //.WithPgAdmin()
     .WithUrlForEndpoint("tcp", u => u.DisplayLocation = UrlDisplayLocation.DetailsOnly)
     .AddDatabase("CarvedRockPostgres");
 
