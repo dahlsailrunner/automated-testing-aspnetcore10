@@ -66,6 +66,28 @@ need to have an OpenAI key (use it to set the `openaiKey` parameter).
 * A tool to delete a product is available to admin users
 * A tool to update the product price is available to admin users
 
+## Testing
+
+This repo features automated testing, and it includes coverage reporting and CI pipeline integration.
+
+Here are some helpful links for more information about various topics and techniques used:
+
+* [TUnit](https://tunit.dev/docs/intro): The testing framework used, which focuses on an easy-to-read API and performance
+* [Coverage configuration](https://github.com/microsoft/codecoverage/blob/main/docs/configuration.md): Excluding things that you don't intend to cover and other such configuration
+* [CI Pipeline - Test Results](https://github.com/EnricoMi/publish-unit-test-result-action): How to include test results in CI pipeline summaries
+* [CI Pipeline - Coverage Reporting](https://reportgenerator.io/usage): How to include coverage details in CI pipeline summaries (and more)
+
+### Recommendations
+
+* Make your results easy to review - both pass rate and coverage percentage
+* Even if initial coverage is low, get the full framework / pipeline established, then focus on improving the numbers
+* [Exclude things](https://github.com/microsoft/codecoverage/blob/main/docs/configuration.md) that you don't intend to cover (e.g. source-generated code, EF core migrations, auto-properties, etc)
+* Use [categories to easily segment tests](https://tunit.dev/docs/execution/test-filters) that you might want to run in isolation
+* Run tests locally during development activities, ***and*** during CI pipelines / PR gates
+* Don't skip tests - update them to be accurate or remove them
+* Test things that matter and truly evaluate the behavior of your application
+* Make execution as fast as you need it (in general, the faster, the better)
+
 ## Data and EF Core Migrations
 
 The `dotnet ef` tool is used to manage EF Core migrations.  The following command was used to create migrations (from the `CarvedRock.Data` folder).
