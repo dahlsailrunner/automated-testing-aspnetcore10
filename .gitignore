@@ -5,3 +5,5 @@ obj/
 *.lscache
 .idea/
 aspire-output/
+TestResults/
+coveragereport/

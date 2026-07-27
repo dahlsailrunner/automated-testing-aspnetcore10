@@ -77,6 +77,13 @@ Here are some helpful links for more information about various topics and techni
 * [CI Pipeline - Test Results](https://github.com/EnricoMi/publish-unit-test-result-action): How to include test results in CI pipeline summaries
 * [CI Pipeline - Coverage Reporting](https://reportgenerator.io/usage): How to include coverage details in CI pipeline summaries (and more)
 
+For the reportgenerator installation, use the following command:
+
+```bash
+dotnet tool install -g dotnet-reportgenerator-globaltool
+
+```
+
 ### Recommendations
 
 * Make your results easy to review - both pass rate and coverage percentage
