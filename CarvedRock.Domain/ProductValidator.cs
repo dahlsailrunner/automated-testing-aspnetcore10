@@ -6,7 +6,7 @@ namespace CarvedRock.Domain;
 
 public class NewProductValidator : AbstractValidator<NewProductModel>
 {
-    //private readonly ICarvedRockRepository _repo;
+    private readonly ICarvedRockRepository _repo;
 
     internal record PriceRange(double Min, double Max);
     internal Dictionary<string, PriceRange> _priceRanges = new()
@@ -16,15 +16,14 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         { "equip", new PriceRange(20, 150) }
     };
 
-    public NewProductValidator()
-    //public NewProductValidator(ICarvedRockRepository repo)
+    public NewProductValidator(ICarvedRockRepository repo)
     {
-        //_repo = repo;
+        _repo = repo;
 
         RuleFor(p => p.Name)
             .NotEmpty().WithMessage("{PropertyName} is required.")
-            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.");
-        //.MustAsync(NameIsUnique).WithMessage("A product with the same name already exists.");
+            .MaximumLength(50).WithMessage("{PropertyName} must not exceed 50 characters.")
+            .MustAsync(NameIsUnique).WithMessage("A product with the same name already exists.");
 
         RuleFor(p => p.Description)
             .NotEmpty().WithMessage("{PropertyName} is required.")
@@ -36,7 +35,7 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
 
         RuleFor(p => p.Price)
            .Must(PriceIsValid)
-           .WithMessage(p => $"Price for {p.Category} must be between {_priceRanges[p.Category]!.Min:C} and {_priceRanges[p.Category]!.Max:C}");
+           .WithMessage(p => $"Price for {p.Category} must be between {_priceRanges[p.Category]!.Min:C} and {_priceRanges[p.Category]!.Max:C}.");
 
         RuleFor(p => p.ImgUrl)
             .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute)).WithMessage("{PropertyName} must be a valid URL.")
@@ -51,8 +50,8 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
         return priceToValidate >= range.Min && priceToValidate <= range.Max;
     }
 
-    // private async Task<bool> NameIsUnique(string name, CancellationToken token)
-    // {
-    //     return await _repo.IsProductNameUniqueAsync(name);
-    // }
+    private async Task<bool> NameIsUnique(string name, CancellationToken token)
+    {
+        return await _repo.IsProductNameUniqueAsync(name);
+    }
 }

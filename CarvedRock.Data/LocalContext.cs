@@ -6,6 +6,7 @@ using System.Text.Json;
 
 namespace CarvedRock.Data;
 
+[ExcludeFromCodeCoverage]
 public class LocalContext(DbContextOptions<LocalContext> options) : DbContext(options)
 {
     public DbSet<Product> Products { get; set; } = null!;
@@ -34,22 +35,22 @@ public class LocalContext(DbContextOptions<LocalContext> options) : DbContext(op
         });
     }
 
-    [ExcludeFromCodeCoverage]
     public void MigrateAndCreateData()
     {
         Database.Migrate(); // always apply migrations       
 
         var pgConn = new NpgsqlConnectionStringBuilder(Database.GetConnectionString());
-        if (pgConn != null && 
+        if (pgConn != null &&
             !string.Equals(pgConn.Host, "localhost", StringComparison.InvariantCultureIgnoreCase) &&
-            !string.Equals(pgConn.Host, "postgres", StringComparison.InvariantCultureIgnoreCase)) 
+            !string.Equals(pgConn.Host, "postgres", StringComparison.InvariantCultureIgnoreCase))
             return;  // only seed/refresh data if we're connecting to a local database
 
         if (Products.Any())
         {
             Products.RemoveRange(Products);
             SaveChanges();
-        };
+        }
+        ;
 
         // Can you help me generate some data for Product?  I'd like about 50 products,
         // and each of them should be something that might be found at an outdoor recreational
