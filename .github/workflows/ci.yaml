@@ -20,7 +20,15 @@ jobs:
           dotnet-version: 10.x
 
       - name: Run tests with coverage
-        run: dotnet test --configuration Release --results-directory ./TestResults -- --coverage --coverage-output-format cobertura --coverage-settings testconfig.json --report-trx
+        run: |
+          dotnet test \
+            --configuration Release \
+            --results-directory ./TestResults \
+            -- \
+            --coverage \
+            --coverage-output-format cobertura \
+            --coverage-settings testconfig.json \
+            --report-trx
 
       - name: Upload test results
         if: always() # Run even if tests fail
