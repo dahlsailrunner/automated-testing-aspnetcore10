@@ -1,3 +1,4 @@
+using System.Globalization;
 using CarvedRock.Core;
 using CarvedRock.Data;
 using FluentValidation;
@@ -35,7 +36,7 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
 
         RuleFor(p => p.Price)
            .Must(PriceIsValid)
-           .WithMessage(p => $"Price for {p.Category} must be between {_priceRanges[p.Category]!.Min:C} and {_priceRanges[p.Category]!.Max:C}.");
+           .WithMessage(p => $"Price for {p.Category} must be between {_priceRanges[p.Category]!.Min.ToString("C", CultureInfo.GetCultureInfo("en-US"))} and {_priceRanges[p.Category]!.Max.ToString("C", CultureInfo.GetCultureInfo("en-US"))}.");
 
         RuleFor(p => p.ImgUrl)
             .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute)).WithMessage("{PropertyName} must be a valid URL.")
