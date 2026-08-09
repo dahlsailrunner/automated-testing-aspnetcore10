@@ -39,7 +39,8 @@ public class NewProductValidator : AbstractValidator<NewProductModel>
            .WithMessage(p => $"Price for {p.Category} must be between {_priceRanges[p.Category]!.Min.ToString("C", CultureInfo.GetCultureInfo("en-US"))} and {_priceRanges[p.Category]!.Max.ToString("C", CultureInfo.GetCultureInfo("en-US"))}.");
 
         RuleFor(p => p.ImgUrl)
-            .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute)).WithMessage("{PropertyName} must be a valid URL.")
+            .Must(url => Uri.IsWellFormedUriString(url, UriKind.Absolute))
+                                .WithMessage("{PropertyName} must be a valid URL.")
             .MaximumLength(255).WithMessage("{PropertyName} must not exceed 255 characters.");
     }
 
