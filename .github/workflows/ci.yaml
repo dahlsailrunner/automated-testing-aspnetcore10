@@ -19,6 +19,15 @@ jobs:
         with:
           dotnet-version: 10.x
 
+      - name: Clear any existing dev certs
+        run: dotnet dev-certs https --clean
+
+      - name: Export SSL_CERT_DIR for OpenSSL trust
+        run: echo "SSL_CERT_DIR=$HOME/.aspnet/dev-certs/trust:/usr/lib/ssl/certs" >> "$GITHUB_ENV"
+
+      - name: Create and trust https certificate
+        run: dotnet dev-certs https --trust
+
       - name: Run tests with coverage
         run: |
           dotnet test \
