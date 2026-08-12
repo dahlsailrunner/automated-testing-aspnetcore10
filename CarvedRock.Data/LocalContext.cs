@@ -58,11 +58,11 @@ public class LocalContext(DbContextOptions<LocalContext> options) : DbContext(op
         }
         ;
 
-        // Can you help me generate some data for Product?  I'd like about 50 products,
-        // and each of them should be something that might be found at an outdoor recreational
-        // equipment store.  The categories for them should be one of  "boots", "equipment", and "kayaks".
-        // Image Urls should be something from the service picsum.photos.
-        // Json format is shown in the examples in this code
+        // Can you help me generate some data for Product?  I'd like 50 products,
+        // and each of them should be something that might be found at an outdoor 
+        // recreational equipment store.  The categories for them should be one of  
+        // "boots", "equipment", and "kayaks". Image Urls should be something from 
+        // the service picsum.photos. Use JSON format and exclude the ID property.
         string baseDirectory = AppContext.BaseDirectory;
         string jsonString = File.ReadAllText(Path.Combine(baseDirectory, "SeedData.json"));
         var products = JsonSerializer.Deserialize<List<Product>>(jsonString,
