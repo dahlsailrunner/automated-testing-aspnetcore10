@@ -35,12 +35,18 @@ public class LocalContext(DbContextOptions<LocalContext> options) : DbContext(op
         });
     }
 
-    public void MigrateAndCreateData()
+    public void MigrateAndCreateData(bool force = false)
     {
-        Database.Migrate(); // always apply migrations       
-
         var pgConn = new NpgsqlConnectionStringBuilder(Database.GetConnectionString());
-        if (pgConn != null &&
+        if (!force && pgConn != null && 
+                              (string.Equals(pgConn.Host, "testing")
+                            || string.Equals(pgConn.Host, "127.0.0.1")
+                            || string.Equals(pgConn.Host, "NOT_USED")))
+            return;  // during test runs this will be handled separately
+
+        Database.EnsureCreated(); // always apply migrations       
+
+        if (!force && pgConn != null &&
             !string.Equals(pgConn.Host, "localhost", StringComparison.InvariantCultureIgnoreCase) &&
             !string.Equals(pgConn.Host, "postgres", StringComparison.InvariantCultureIgnoreCase))
             return;  // only seed/refresh data if we're connecting to a local database

@@ -2,7 +2,7 @@ using CarvedRock.Core;
 using CarvedRock.Data;
 using CarvedRock.Domain;
 
-namespace CarvedRock.Tests;
+namespace CarvedRock.UnitTests;
 
 public class ProductValidation_DataDrivenTests
 {

@@ -4,7 +4,8 @@
     <File Path="readme.md" />
   </Folder>
   <Folder Name="/tests/">
-    <Project Path="tests/CarvedRock.Tests/CarvedRock.Tests.csproj" />
+    <Project Path="tests/CarvedRock.ApiTests/CarvedRock.ApiTests.csproj" />
+    <Project Path="tests/CarvedRock.UnitTests/CarvedRock.UnitTests.csproj" />
   </Folder>
   <Project Path="CarvedRock.Agent/CarvedRock.Agent.csproj" />
   <Project Path="CarvedRock.Api/CarvedRock.Api.csproj" />

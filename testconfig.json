@@ -14,7 +14,8 @@
           ".*\\\\Riok.Mapperly\\\\.*",
           ".*\\\\.*Models.*",
           ".*\\\\.*Model.*",
-          ".*\\\\.*Entities.*"
+          ".*\\\\.*Entities.*",
+          ".*\\\\MailKit.Client\\\\.*"
         ]
       }
     }

@@ -4,6 +4,6 @@ dotnet test --coverage --coverage-output-format cobertura --coverage-settings te
 
 reportgenerator -reports:TestResults/*.cobertura.xml -targetdir:coveragereport
 
-./coveragereport/index.html
+Invoke-Item ./coveragereport/index.html
 
-./TestResults/*.html
+Invoke-Item ./TestResults/*.html
