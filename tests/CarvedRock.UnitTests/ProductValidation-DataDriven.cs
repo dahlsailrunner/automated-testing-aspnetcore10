@@ -1,13 +1,14 @@
 using CarvedRock.Core;
 using CarvedRock.Data;
 using CarvedRock.Domain;
+using FluentValidation;
 
 namespace CarvedRock.UnitTests;
 
 public class ProductValidation_DataDrivenTests
 {
     private static ICarvedRockRepository _mockedRepo = null!;
-    private static NewProductValidator _validator = null!;
+    private static IValidator<NewProductModel> _validator = null!;
 
     [Before(Class)]
     public static void SetupDatabaseMock(ClassHookContext context)
@@ -49,7 +50,8 @@ public class ProductValidation_DataDrivenTests
             Price = price
         };
 
-        var result = await _validator.ValidateAsync(productToValidate);
+        var result = await _validator.ValidateAsync(productToValidate,
+            opts => opts.IncludeAllRuleSets());
 
         await Assert.That(result.Errors)
             .Contains(err => err.ErrorMessage == expectedMessage);
@@ -61,7 +63,8 @@ public class ProductValidation_DataDrivenTests
     public async Task SingleValidationFailures(NewProductModel productToValidate,
             string expectedMessage)
     {
-        var result = await _validator.ValidateAsync(productToValidate);
+        var result = await _validator.ValidateAsync(productToValidate,
+            opts => opts.IncludeAllRuleSets());
 
         await Assert.That(result.Errors)
             .Contains(err => err.ErrorMessage == expectedMessage);
@@ -150,7 +153,8 @@ public class ProductValidation_DataDrivenTests
             ImgUrl = imageUrl!,
             Price = price
         };
-        var result = await _validator.ValidateAsync(productToValidate);
+        var result = await _validator.ValidateAsync(productToValidate,
+            opts => opts.IncludeAllRuleSets());
 
         // only one await with this syntax - evaluate multiple
         //   properties of the result

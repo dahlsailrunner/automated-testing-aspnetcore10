@@ -57,7 +57,7 @@ public partial class ProductController(IProductLogic productLogic,
             var result = await productLogic.UpdateProductAsync(id, updatedProduct);
             return Ok(result);
         }
-        catch
+        catch (KeyNotFoundException)
         {
             return NotFound();
         }

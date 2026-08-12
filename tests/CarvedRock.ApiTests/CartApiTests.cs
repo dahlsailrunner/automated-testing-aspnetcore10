@@ -11,6 +11,7 @@ public class CartApiTests : ApiTestsBase
         var response = await client.GetAsync("/cart");
         var jsonContent = await response.Content.ReadAsStringAsync();
 
+        // var logger = TestContext.Current!.GetDefaultLogger();
         TestLogger.LogInformation($"Got the following response: --{jsonContent}--");
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);

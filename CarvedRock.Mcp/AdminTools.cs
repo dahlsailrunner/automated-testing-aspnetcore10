@@ -1,10 +1,8 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using ModelContextProtocol.Protocol;
 using ModelContextProtocol.Server;
 using System.ComponentModel;
 using System.Text.Json;
-using static ModelContextProtocol.Protocol.ElicitRequestParams;
 
 namespace CarvedRock.Mcp;
 
@@ -19,15 +17,15 @@ public class AdminTools(IHttpClientFactory httpClientFactory)
     {
         var client = httpClientFactory.CreateClient("CarvedRockApi");
         var response = await client.DeleteAsync($"product/{id}", cancellationToken);
-        if (!response.IsSuccessStatusCode) throw new Exception($"Error deleting product {id}; HttpResponseCode was {(int)response.StatusCode}");        
-        
+        if (!response.IsSuccessStatusCode) throw new Exception($"Error deleting product {id}; HttpResponseCode was {(int)response.StatusCode}");
+
         return new OperationResult("ok");
     }
 
-    
+
     [McpServerTool(Name = "set_product_price")]
-    [Description("Update the price of a single product based on its Id.")]    
-    public async Task<OperationResult> UpdateProductPriceAsync(int id, double newPrice, McpServer server, CancellationToken cancellationToken = default)
+    [Description("Update the price of a single product based on its Id.")]
+    public async Task<OperationResult> UpdateProductPriceAsync(int id, double newPrice, CancellationToken cancellationToken = default)
     {
         var client = httpClientFactory.CreateClient("CarvedRockApi");
 
@@ -45,35 +43,6 @@ public class AdminTools(IHttpClientFactory httpClientFactory)
             var content = await response.Content.ReadAsStringAsync(cancellationToken);
             var problem = JsonSerializer.Deserialize<ProblemDetails>(content);
 
-            if (problem?.Title == "Validation error" && server.ClientCapabilities?.Elicitation != null)
-            {
-                // ELICITION EXAMPLE:  Maybe an alternative would be to confirm deletion?
-                // MCP Server cannot be STATELESS
-                // https://modelcontextprotocol.github.io/csharp-sdk/concepts/elicitation/elicitation.html
-                // Maybe a method: GetRevisedPriceAndTryAgain() ?
-                var errorMessage = problem.Extensions.First().Value; // TODO: parse out max / min?
-
-                var updatedPriceSchema = new RequestSchema
-                {
-                    Properties = { ["RevisedPrice"] = new NumberSchema() { Maximum = 300, Minimum = 50 } }
-                };
-
-                using var extendedCts = CancellationTokenSource.CreateLinkedTokenSource(cancellationToken);
-                extendedCts.CancelAfter(TimeSpan.FromMinutes(5));
-                var priceResponse = await server.ElicitAsync(new ElicitRequestParams
-                {
-                    Message = $"Is there a different price you'd like to use? ({errorMessage})",
-                    RequestedSchema = updatedPriceSchema,
-
-                }, extendedCts.Token);
-
-                if (priceResponse.IsAccepted)
-                {
-                    var newPriceValue = (priceResponse.Content?["RevisedPrice"])?.GetDouble();
-                    // TODO: Retry the call with a new price
-                }
-            }
-
             var errorDetails = "";
             if (problem != null)
             {
@@ -90,10 +59,9 @@ public class AdminTools(IHttpClientFactory httpClientFactory)
         {
             throw new Exception($"Error updating price on product {id}; HttpResponseCode was {(int)response.StatusCode}");
         }
-            
 
         return new OperationResult("ok");
-    }    
+    }
 }
 
 public record FullProductModel

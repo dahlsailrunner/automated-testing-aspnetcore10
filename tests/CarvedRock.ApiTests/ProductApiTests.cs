@@ -38,10 +38,10 @@ public class ProductApiTests : ApiTestsBase
         var client = Factory.CreateClient();
         client.AddAdminAuthHeaders();
 
-        var randomProduct = TestData.GeneralFaker.PickRandom(TestData.InitialProducts);
+        var lastProduct = TestData.InitialProducts.Last();
 
         var retrievedProduct = await client.GetFromJsonAsync<Product>
-                                    ($"/product/{randomProduct.Id}");
+                                    ($"/product/{lastProduct.Id}");
 
         // update whichever fields you like
         var productToUpdate = new Product(
@@ -52,7 +52,7 @@ public class ProductApiTests : ApiTestsBase
             retrievedProduct!.Price,
             retrievedProduct!.ImgUrl);
 
-        var response = await client.PutAsJsonAsync($"/product/{randomProduct.Id}",
+        var response = await client.PutAsJsonAsync($"/product/{lastProduct.Id}",
                                         productToUpdate);
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         var updated = await response.Content.ReadFromJsonAsync<Product>();

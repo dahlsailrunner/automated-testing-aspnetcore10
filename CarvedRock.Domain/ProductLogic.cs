@@ -27,7 +27,12 @@ public class ProductLogic(ICarvedRockRepository repo,
 
     public async Task<ProductModel> CreateProductAsync(NewProductModel newProduct)
     {
-        await newProductValidator.ValidateAndThrowAsync(newProduct);
+        await newProductValidator.ValidateAsync(newProduct,
+            options =>
+            {
+                options.ThrowOnFailures();
+                options.IncludeAllRuleSets();
+            });
 
         var productMapper = new ProductMapper();
 
@@ -38,6 +43,9 @@ public class ProductLogic(ICarvedRockRepository repo,
 
     public async Task<ProductModel> UpdateProductAsync(int id, NewProductModel updatedProduct)
     {
+        await newProductValidator.ValidateAsync(updatedProduct,
+            options => options.ThrowOnFailures());
+
         var productMapper = new ProductMapper();
         var productToUpdate = productMapper.NewProductModelToProduct(updatedProduct);
         productToUpdate.Id = id;

@@ -1,6 +1,7 @@
 using CarvedRock.Core;
 using CarvedRock.Data;
 using CarvedRock.Domain;
+using FluentValidation;
 
 namespace CarvedRock.UnitTests;
 
@@ -159,7 +160,7 @@ public class ProductValidationTests
     [Test]
     public async Task DuplicateNameFails()
     {
-        var validator = new NewProductValidator(_mockedRepo);
+        IValidator<NewProductModel> validator = new NewProductValidator(_mockedRepo);
 
         var newProduct = new NewProductModel
         {
@@ -170,7 +171,8 @@ public class ProductValidationTests
             Price = 59.99
         };
 
-        var result = await validator.ValidateAsync(newProduct);
+        var result = await validator.ValidateAsync(newProduct,
+            opts => opts.IncludeAllRuleSets());
 
         await Assert.That(result.Errors)
                     .Contains(err => err.ErrorMessage == 
