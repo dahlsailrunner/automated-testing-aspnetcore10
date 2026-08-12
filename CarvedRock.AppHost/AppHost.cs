@@ -1,9 +1,5 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-#pragma warning disable ASPIRECOMPUTE003
-var registry = builder.AddContainerRegistry("registry", "carvedrock.docker.com");
-builder.AddKubernetesEnvironment("cr-k8s").WithContainerRegistry(registry);
-
 var db = builder.AddPostgres("db")
     .WithUrlForEndpoint("tcp", u => u.DisplayLocation = UrlDisplayLocation.DetailsOnly)
     .AddDatabase("CarvedRockPostgres");
@@ -38,7 +34,7 @@ var mcp = builder.AddProject<Projects.CarvedRock_Mcp>("mcp")
     .WithReference(api)
     .WaitFor(api);
 
-var openAiKeyParam = builder.AddParameter("openaiKey", secret: true)
+var openAiKeyParam = builder.AddParameter("openaiKey", value: "", secret: true)
     .WithDescription("OpenAI API Key.  Get one from " +
     "[OpenAI](https://platform.openai.com). Note " +
      "that without this set, all features except the AI chat and the " +
