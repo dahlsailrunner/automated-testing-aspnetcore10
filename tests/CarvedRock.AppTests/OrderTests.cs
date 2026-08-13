@@ -24,7 +24,8 @@ public class OrderTests(AppFixture fixture)
             var response = await client.PostAsJsonAsync("/cart",
                                 new CartItem(product.Id, 1));
 
-            await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.NoContent);
+            await Assert.That(response.StatusCode)
+                    .IsEqualTo(HttpStatusCode.NoContent);
         }
 
         // place order

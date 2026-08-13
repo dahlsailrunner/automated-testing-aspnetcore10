@@ -30,9 +30,13 @@ public class ProductApiTests(AppFixture fixture)
         //     .And.Member(p => p.Description, desc => desc.EndsWith("desert exploration."));
 
         // approach 2: check an entire record that you create on the fly
-        var expectedProduct = new Product(2, "Desert Walker", "boots",
+        var expectedProduct = new Product(
+                2, 
+                "Desert Walker", 
+                "boots",
                 "Breathable and lightweight boots perfect for hot weather hiking and desert exploration.",
-                74.99, "https://picsum.photos/id/15/800/600");
+                74.99, 
+                "https://picsum.photos/id/15/800/600");
         await Assert.That(product).IsEqualTo(expectedProduct); // works because it's a record, not a class
 
         // approach 3: get the expected record from the initial data set
@@ -53,11 +57,11 @@ public class ProductApiTests(AppFixture fixture)
 
         var createdProduct = await response.Content.ReadFromJsonAsync<Product>();
         await Assert.That(createdProduct).IsNotNull()
-            .And.Member(p => p.Name, name => name.IsEqualTo("Fancy Feet"))
-            .And.Member(p => p.Category, cat => cat.IsEqualTo("boots"))
-            .And.Member(p => p.Description, desc => desc.IsEqualTo("Amazing footwear!"))
-            .And.Member(p => p.Price, price => price.IsEqualTo(69.99))
-            .And.Member(p => p.ImgUrl, url => url.IsEqualTo("https://some.img/cool.png"));
+            .And.Member(p => p.Name, name => name.IsEqualTo(newProduct.Name))
+            .And.Member(p => p.Category, cat => cat.IsEqualTo(newProduct.Category))
+            .And.Member(p => p.Description, desc => desc.IsEqualTo(newProduct.Description))
+            .And.Member(p => p.Price, price => price.IsEqualTo(newProduct.Price))
+            .And.Member(p => p.ImgUrl, url => url.IsEqualTo(newProduct.ImgUrl));
     }
 }
 

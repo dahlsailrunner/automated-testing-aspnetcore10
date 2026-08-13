@@ -7,12 +7,12 @@ using Projects;
 using TUnit.Aspire;
 using Bogus;
 
-[assembly: Timeout(300_000)]
-
 namespace CarvedRock.AppTests;
 
 public class AppFixture : AspireFixture<CarvedRock_AppHost>
 {
+    protected override TimeSpan ResourceTimeout => TimeSpan.FromMinutes(3);
+
     public List<Product> InitialProducts { get; private set; } = null!;
 
     public Faker GeneralFaker = new();
@@ -40,8 +40,7 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
     {
         var client = App.CreateHttpClient("api");
         var token = await GetClientCredsAccessTokenAsync("m2m.short", "secret"); // admin is m2m.short
-        //client.SetBearerToken(token); // Duende.IdentityModel convenience method
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+        client.SetBearerToken(token); // Duende.IdentityModel convenience method
 
         return client;
     }
@@ -50,8 +49,7 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
     {
         var client = App.CreateHttpClient("api");
         var token = await GetClientCredsAccessTokenAsync("m2m", "secret"); // admin is m2m.short
-        //client.SetBearerToken(token); // Duende.IdentityModel convenience method
-        client.DefaultRequestHeaders.Add("Authorization", $"Bearer {token}");
+        client.SetBearerToken(token); // Duende.IdentityModel convenience method
 
         return client;
     }

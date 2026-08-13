@@ -68,12 +68,15 @@ public class McpTests(AppFixture fixture)
             new Dictionary<string, object?>
             {
                 { "id", 22 },
-                { "newPrice", 88.88 }
+                { "newPrice", 120.88 } // valid for all product types
             });
 
         var responseJson = response.Content.First(c => c.Type == "text") as TextContentBlock;
         var opResult = JsonSerializer.Deserialize<OperationResult>(responseJson?.Text ?? "{}",
             CamelCaseOptions);
+
+        await Assert.That(opResult).IsNotNull()
+            .And.Member(r => r.Status, s => s.IsEqualTo("ok"));
     }
 
     [Test]
@@ -94,7 +97,8 @@ public class McpTests(AppFixture fixture)
 
         await Assert.That(opResult).IsNotNull()
             .And.Member(r => r.Status, s => s.IsEqualTo("error"))
-            .And.Member(r => r.Message, m => m.IsNotNull().And.Contains("validation error"));
+            .And.Member(r => r.Message, m => m.IsNotNull()
+            .And.Contains("validation error"));
     }
 }
 public record ProductModel(int Id, string Name, string Description, string Category, double Price);
