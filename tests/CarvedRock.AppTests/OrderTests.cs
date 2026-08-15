@@ -29,8 +29,10 @@ public class OrderTests(AppFixture fixture)
         }
 
         // place order
-        var orderResult = await client.PostAsJsonAsync("/order", new NewOrder(null));
-        await Assert.That(orderResult.StatusCode).IsEqualTo(HttpStatusCode.Created);
+        var orderResult = await client.PostAsJsonAsync("/order",
+                                new NewOrder(null));
+        await Assert.That(orderResult.StatusCode)
+                                .IsEqualTo(HttpStatusCode.Created);
         //-------------------------------------------------------
         // order was placed -- the rest is all of the assertions
         //    and checks to verify the order completely 
@@ -50,9 +52,11 @@ public class OrderTests(AppFixture fixture)
             .Include(o => o.Details)
             .SingleAsync(o => o.Id == placedOrder!.Id);
 
-        await Assert.That(savedOrder.Email).IsEqualTo(placedOrder.Email);
-        await Assert.That(savedOrder.Total).IsEqualTo(savedOrder.Details.Sum(d => d.LineTotal));
-        await Assert.That(savedOrder.Details).Count().IsEqualTo(productsToOrder.Count());
+        await Assert.That(savedOrder).IsNotNull()
+            .And.Member(o => o.Email, e => e.IsEqualTo(placedOrder!.Email))
+            .And.Member(o => o.Total, t =>
+                    t.IsEqualTo(savedOrder.Details.Sum(d => d.LineTotal)))
+            .And.Member(o => o.Details.Count, c => c.IsEqualTo(productsToOrder.Count));
 
         foreach (var product in productsToOrder)
         {
@@ -71,7 +75,8 @@ public class OrderTests(AppFixture fixture)
         // verify email exists, and contains each ordered product
         using var mailClient = new HttpClient { BaseAddress = emailApiEndpoint };
 
-        var messages = await mailClient.GetFromJsonAsync<MailPitMessageList>("/api/v1/messages");
+        var messages = await mailClient
+                .GetFromJsonAsync<MailPitMessageList>("/api/v1/messages");
         var sentMessage = messages!.Messages
             .Where(m => m.To.Any(to => to.Address == placedOrder!.Email))
             .OrderByDescending(m => m.Created)
@@ -80,7 +85,8 @@ public class OrderTests(AppFixture fixture)
         await Assert.That(sentMessage).IsNotNull();
         await Assert.That(sentMessage!.Subject).IsEqualTo("Your CarvedRock Order");
 
-        var fullMessage = await mailClient.GetFromJsonAsync<MailPitMessage>($"/api/v1/message/{sentMessage.ID}");
+        var fullMessage = await mailClient
+                .GetFromJsonAsync<MailPitMessage>($"/api/v1/message/{sentMessage.ID}");
 
         foreach (var product in productsToOrder)
         {

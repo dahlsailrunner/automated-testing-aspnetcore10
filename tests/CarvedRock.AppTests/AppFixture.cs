@@ -16,6 +16,16 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
     public List<Product> InitialProducts { get; private set; } = null!;
 
     public Faker GeneralFaker = new();
+    public readonly Faker<NewProductModel> NewProductFaker =
+                        new Faker<NewProductModel>()
+        .RuleFor(p => p.Name, f => f.Commerce.ProductName())
+        .RuleFor(p => p.Description, f => f.Commerce.ProductDescription())
+        .RuleFor(p => p.Category, f => f.PickRandom("boots", "equip", "kayak"))
+        .RuleFor(p => p.Price, (f, p) =>
+                p.Category == "boots" ? f.Random.Double(50, 300) :
+                p.Category == "equip" ? f.Random.Double(20, 150) :
+                p.Category == "kayak" ? f.Random.Double(100, 500) : 0)
+        .RuleFor(p => p.ImgUrl, f => f.Image.PicsumUrl());
 
     public override async Task InitializeAsync()
     {
@@ -143,4 +153,6 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
 // of what the tests expect are clearly documented and tested rather
 // than relying on the code (which can change)
 public record Product(int Id, string Name, string Category,
+                      string Description, double Price, string ImgUrl);
+public record NewProductModel(string Name, string Category,
                       string Description, double Price, string ImgUrl);

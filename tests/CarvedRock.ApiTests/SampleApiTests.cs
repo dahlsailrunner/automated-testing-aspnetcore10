@@ -62,7 +62,7 @@ public class SampleApiTests : ApiTestsBase
         var client = Factory.CreateClient();
         client.AddAdminAuthHeaders();        
 
-        var response = await client.GetAsync("/sample/auth?text=hello");
+        var response = await client.GetAsync("/sample/auth-admin?text=hello");
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.OK);
         var content = await response.Content.ReadAsStringAsync();
