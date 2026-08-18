@@ -1,12 +1,7 @@
-using TUnit.Playwright;
-
 namespace CarvedRock.AppTests;
 
-[ClassDataSource<AppFixture>(Shared = SharedType.PerTestSession)]
-public partial class WebAppTests(AppFixture fixture) : PageTest
+public partial class WebAppTests : CustomPageTest
 {
-    private readonly string WebAppUrl = fixture.App.GetEndpoint("webapp")!.ToString();
-
     [Test]
     public async Task HomePageWorks()
     {
