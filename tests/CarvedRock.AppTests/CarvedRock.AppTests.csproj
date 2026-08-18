@@ -12,11 +12,21 @@
     <PackageReference Include="Bogus" Version="35.6.5" />
     <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.1.0" />
     <PackageReference Include="TUnit.Aspire" Version="1.64.6" />
+    <PackageReference Include="TUnit.Playwright" Version="1.65.0" />
   </ItemGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\..\CarvedRock.AppHost\CarvedRock.AppHost.csproj" />
     <ProjectReference Include="..\..\CarvedRock.Data\CarvedRock.Data.csproj" />
   </ItemGroup>
-  
+
+  <ItemGroup>
+    <Using Include="Aspire.Hosting.Testing" />
+    <Using Include="System.Net.Http.Json" />
+    <Using Include="System.Text.RegularExpressions" />
+    <Using Include="Microsoft.EntityFrameworkCore" />
+    <Using Include="CarvedRock.AppTests.Utils" />
+    <Using Include="Microsoft.Playwright" />
+  </ItemGroup>
+
 </Project>

@@ -1,5 +1,3 @@
-using System.Net.Http.Json;
-
 namespace CarvedRock.AppTests;
 
 [ClassDataSource<AppFixture>(Shared = SharedType.PerTestSession)]
@@ -31,11 +29,11 @@ public class ProductApiTests(AppFixture fixture)
 
         // approach 2: check an entire record that you create on the fly
         var expectedProduct = new Product(
-                2, 
-                "Desert Walker", 
+                2,
+                "Desert Walker",
                 "boots",
                 "Breathable and lightweight boots perfect for hot weather hiking and desert exploration.",
-                74.99, 
+                74.99,
                 "https://picsum.photos/id/15/800/600");
         await Assert.That(product).IsEqualTo(expectedProduct); // works because it's a record, not a class
 
@@ -45,6 +43,7 @@ public class ProductApiTests(AppFixture fixture)
     }
 
     [Test]
+    [DependsOn(nameof(GetProductsAnonymous_ReturnsAllProducts))]
     public async Task PostNewProductForAdmin_Works()
     {
         var client = await fixture.GetAdminApiClient();

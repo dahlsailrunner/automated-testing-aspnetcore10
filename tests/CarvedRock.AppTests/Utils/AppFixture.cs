@@ -1,13 +1,11 @@
-using Aspire.Hosting.Testing;
 using CarvedRock.Data;
 using Duende.IdentityModel.Client;
-using Microsoft.EntityFrameworkCore;
 using ModelContextProtocol.Client;
 using Projects;
 using TUnit.Aspire;
 using Bogus;
 
-namespace CarvedRock.AppTests;
+namespace CarvedRock.AppTests.Utils;
 
 public class AppFixture : AspireFixture<CarvedRock_AppHost>
 {

@@ -34,7 +34,8 @@ var mcp = builder.AddProject<Projects.CarvedRock_Mcp>("mcp")
     .WithReference(api)
     .WaitFor(api);
 
-var openAiKeyParam = builder.AddParameter("openaiKey", value: "", secret: true)
+var openAiKeyParam = builder.AddParameter("openaiKey", 
+        value: builder.Configuration["Parameters:openaiKey"] ?? "", secret: true)
     .WithDescription("OpenAI API Key.  Get one from " +
     "[OpenAI](https://platform.openai.com). Note " +
      "that without this set, all features except the AI chat and the " +

@@ -3,6 +3,7 @@ namespace CarvedRock.ApiTests;
 public class ProductApiTests : ApiTestsBase
 {
     [Test]
+    [DependsOn(nameof(GetProductsLoggedIn_ReturnsAllProducts))]
     public async Task GetProductsAnonymous_ReturnsAllProducts()
     {
         var client = Factory.CreateClient();
@@ -21,6 +22,7 @@ public class ProductApiTests : ApiTestsBase
     }
 
     [Test]
+    [DependsOn(nameof(GetProductsLoggedIn_ReturnsAllProducts))]
     public async Task DeleteProductAsAdmin_Succeeds()
     {
         var client = Factory.CreateClient();
@@ -60,7 +62,6 @@ public class ProductApiTests : ApiTestsBase
     }
 
     [Test]
-    //[DependsOn(nameof(DeleteProductAsAdmin_Succeeds))]
     public async Task GetProductsLoggedIn_ReturnsAllProducts()
     {
         var client = Factory.CreateClient();
@@ -88,7 +89,7 @@ public class ProductApiTests : ApiTestsBase
         newProduct.Name = ""; // invalid
 
         var response = await client.PostAsJsonAsync
-            ("/product", newProduct);//, HttpStatusCode.BadRequest, outputHelper);
+            ("/product", newProduct);
 
         await Assert.That(response.StatusCode).IsEqualTo(HttpStatusCode.BadRequest);
 

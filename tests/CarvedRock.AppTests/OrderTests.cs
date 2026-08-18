@@ -1,8 +1,5 @@
 using System.Net;
-using System.Net.Http.Json;
-using Aspire.Hosting.Testing;
 using CarvedRock.Data;
-using Microsoft.EntityFrameworkCore;
 
 namespace CarvedRock.AppTests;
 
