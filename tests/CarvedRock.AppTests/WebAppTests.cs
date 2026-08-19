@@ -64,4 +64,28 @@ public partial class WebAppTests : CustomPageTest
         await Expect(Page.Locator("#preview-html").ContentFrame.Locator("body"))
                     .ToContainTextAsync("Enjoy your new gear!");
     }
+
+    [Test]
+    [RecordVideo]
+    public async Task AdminCanDeleteProductsViaChat()
+    {
+        await Page.GotoAsync(WebAppUrl);
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Sign in" }).ClickAsync();
+
+        await Page.Login("bob", "bob");  // admin
+        
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Footwear" }).ClickAsync();
+
+        await Page.GetByRole(AriaRole.Textbox, new() { Name = "Describe your activity" })
+                        .FillAsync("/admin delete products 20 and 23");
+
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Send" }).ClickAsync();
+        await Expect(Page.Locator("#chatMessages"))
+                .ToContainTextAsync("successfully",  // be careful - non-deterministic!!
+                    options: new() { Timeout = 15_000 });
+
+        var actualProduct = await Fixture.TestDbContext.Products
+                                .FirstOrDefaultAsync(p => p.Id == 20 || p.Id == 23);
+        await Assert.That(actualProduct).IsNull();
+    }
 }

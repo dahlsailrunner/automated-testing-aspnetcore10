@@ -11,6 +11,8 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
 {
     protected override TimeSpan ResourceTimeout => TimeSpan.FromMinutes(3);
 
+    public LocalContext TestDbContext { get; private set; } = null!;
+
     public List<Product> InitialProducts { get; private set; } = null!;
 
     public Faker GeneralFaker = new();
@@ -36,9 +38,9 @@ public class AppFixture : AspireFixture<CarvedRock_AppHost>
         var options = new DbContextOptionsBuilder<LocalContext>()
                             .UseNpgsql(connStr)
                             .Options;
-        var context = new LocalContext(options);
+        TestDbContext = new LocalContext(options);
 
-        InitialProducts = await context.Products.Select(p =>
+        InitialProducts = await TestDbContext.Products.Select(p =>
                 new Product(p.Id, p.Name, p.Category, p.Description,
                             p.Price, p.ImgUrl))
             .ToListAsync(); ;

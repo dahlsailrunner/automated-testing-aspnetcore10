@@ -12,7 +12,9 @@ public class OrderTests(AppFixture fixture)
         var client = await fixture.GetCustomerApiClient();
 
         var productsToOrder = fixture.GeneralFaker
-                .PickRandom(fixture.InitialProducts, 3)
+                .PickRandom(fixture
+                    .InitialProducts.Where(p => p.Id != 20 && p.Id != 23),
+                    3)
                 .ToList(); // important!  this locks the list
 
         // add products to cart
