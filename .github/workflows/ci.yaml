@@ -54,6 +54,20 @@ jobs:
           name: raw-test-results
           path: ./TestResults/*
 
+      - name: Upload merged report
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: merged-test-report
+          path: ${{ runner.temp }}/tunit-aggregate/**/merged-report.html
+
+      - name: Upload Playwright artifacts
+        if: always() # Run even if tests fail
+        uses: actions/upload-artifact@v4
+        with:
+          name: playwright-artifacts
+          path: ./tests/CarvedRock.AppTests/bin/Release/net10.0/playwright-artifacts/*
+
       - name: ReportGenerator
         uses: danielpalme/ReportGenerator-GitHub-Action@5.5.10
         with:
