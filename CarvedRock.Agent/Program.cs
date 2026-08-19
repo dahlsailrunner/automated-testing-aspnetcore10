@@ -1,7 +1,6 @@
 using CarvedRock.Agent;
 using CarvedRock.Core;
 using Microsoft.AspNetCore.Authentication;
-using Microsoft.Extensions.AI;
 using Microsoft.IdentityModel.Tokens;
 using OpenAI;
 using System.Diagnostics;
@@ -13,14 +12,6 @@ var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
 
 builder.Services.AddProblemDetails(opts => opts.CustomizeProblemDetails = CustomizeProblemDetails);
-
-// package: Aspire.OpenAI
-// User secrets for the AIConnection:OpenAIKey value
-// var openAiKey = builder.Configuration.GetValue<string>("AIConnection:OpenAIKey")!;
-// builder.Services
-//     .AddChatClient(new OpenAIClient(openAiKey)
-//     .GetChatClient(builder.Configuration.GetValue<string>("AIConnection:OpenAIModel")!)
-//     .AsIChatClient());
 
 builder.AddOpenAIClient("kyt-OpenAI", configureSettings: settings =>
 {
@@ -92,5 +83,3 @@ static void CustomizeProblemDetails(ProblemDetailsContext context)
     context.ProblemDetails.Detail = "Provide the instance value when contacting us for support";
     context.ProblemDetails.Instance = Activity.Current?.RootId;
 }
-
-record AIConnection(string Endpoint, string Key, string Deployment);

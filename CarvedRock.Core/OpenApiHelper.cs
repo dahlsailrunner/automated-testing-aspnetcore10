@@ -1,15 +1,17 @@
+using System.Diagnostics.CodeAnalysis;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.OpenApi;
 
 namespace CarvedRock.Core;
 
+[ExcludeFromCodeCoverage]
 public static class OpenApiHelper
 {
     public static IServiceCollection AddOpenApiWithAuth(this IServiceCollection services,
         string authority, Dictionary<string, string> scopes)
     {
         services.AddOpenApi(options =>
-        {            
+        {
             options.AddDocumentTransformer((document, _, _) =>
             {
                 document.Components ??= new OpenApiComponents();

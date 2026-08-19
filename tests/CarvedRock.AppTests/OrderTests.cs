@@ -16,7 +16,9 @@ public class OrderTests(AppFixture fixture)
 
         var productsToOrder = fixture.GeneralFaker
                 .PickRandom(fixture
-                    .InitialProducts.Where(p => p.Id != 20 && p.Id != 23),
+                    .InitialProducts.Where(p =>
+                           p.Id != 20 && p.Id != 23 // deleted by webapptest
+                        && p.Id != 22),             // updated by mcp test
                     3)
                 .ToList(); // important!  this locks the list
 
