@@ -12,10 +12,10 @@ jobs:
 
     steps:
       - name: Checkout code
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
       - name: Setup .NET
-        uses: actions/setup-dotnet@v4
+        uses: actions/setup-dotnet@v6
         with:
           dotnet-version: 10.x
 
@@ -49,27 +49,27 @@ jobs:
 
       - name: Upload test results
         if: always() # Run even if tests fail
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: raw-test-results
           path: ./TestResults/*
 
       - name: Upload merged report
         if: always()
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: merged-test-report
           path: ${{ runner.temp }}/tunit-aggregate/**/merged-report.html
 
       - name: Upload Playwright artifacts
         if: always() # Run even if tests fail
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: playwright-artifacts
           path: ./tests/CarvedRock.AppTests/bin/Release/net10.0/playwright-artifacts/*
 
       - name: ReportGenerator
-        uses: danielpalme/ReportGenerator-GitHub-Action@5.5.10
+        uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
         with:
           reports: "./TestResults/*.cobertura.xml" # REQUIRED # The coverage reports that should be parsed (separated by semicolon). Globbing is supported.
           targetdir: "coveragereport" # REQUIRED # The directory where the generated report should be saved.
@@ -78,7 +78,7 @@ jobs:
           toolpath: "reportgeneratortool" # Default directory for installing the dotnet tool.
 
       - name: Upload coverage report artifact
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage-report # Artifact name
           path: coveragereport # Directory containing files to upload
