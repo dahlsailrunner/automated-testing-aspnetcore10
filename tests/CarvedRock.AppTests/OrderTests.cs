@@ -1,11 +1,14 @@
 using System.Net;
 using CarvedRock.Data;
+using TUnit.Core.Logging;
 
 namespace CarvedRock.AppTests;
 
 [ClassDataSource<AppFixture>(Shared = SharedType.PerTestSession)]
 public class OrderTests(AppFixture fixture)
 {
+    protected static DefaultLogger TestLogger => TestContext.Current!.GetDefaultLogger();
+
     [Test]
     public async Task PlacingOrderWorksCompletely()
     {
@@ -56,6 +59,15 @@ public class OrderTests(AppFixture fixture)
             .And.Member(o => o.Total, t =>
                     t.IsEqualTo(savedOrder.Details.Sum(d => d.LineTotal)))
             .And.Member(o => o.Details.Count, c => c.IsEqualTo(productsToOrder.Count));
+
+        foreach (var ordered in savedOrder.Details)
+        {
+            TestLogger.LogInformation($"ACTUAL: [ {ordered.ProductId}, {ordered.ProductName}, {ordered.Quantity}, {ordered.UnitPrice} ]");
+        }
+        foreach (var product in productsToOrder)
+        {
+            TestLogger.LogInformation($"EXPECTED: {product}");
+        }
 
         foreach (var product in productsToOrder)
         {

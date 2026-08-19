@@ -13,7 +13,7 @@ public class CustomPageTest : PageTest
     public override BrowserNewContextOptions ContextOptions(TestContext testContext)
     {
         var options = base.ContextOptions(testContext);
-        options.IgnoreHTTPSErrors = true;       
+        options.IgnoreHTTPSErrors = true;
 
         if (testContext.StateBag.ContainsKey(RecordVideoAttribute.StateBagKey))
         {
