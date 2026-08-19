@@ -3,7 +3,6 @@ namespace CarvedRock.ApiTests;
 public class ProductApiTests : ApiTestsBase
 {
     [Test]
-    [DependsOn(nameof(GetProductsLoggedIn_ReturnsAllProducts))]
     public async Task GetProductsAnonymous_ReturnsAllProducts()
     {
         var client = Factory.CreateClient();
@@ -23,6 +22,7 @@ public class ProductApiTests : ApiTestsBase
 
     [Test]
     [DependsOn(nameof(GetProductsLoggedIn_ReturnsAllProducts))]
+    [DependsOn(nameof(GetProductsAnonymous_ReturnsAllProducts))]
     public async Task DeleteProductAsAdmin_Succeeds()
     {
         var client = Factory.CreateClient();
