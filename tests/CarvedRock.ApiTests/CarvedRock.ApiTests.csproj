@@ -8,10 +8,10 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="TUnit.AspNetCore" Version="1.64.6" />
-    <PackageReference Include="Testcontainers.PostgreSql" Version="4.13.0" />
+    <PackageReference Include="TUnit.AspNetCore" Version="1.65.38" />
+    <PackageReference Include="Testcontainers.PostgreSql" Version="4.14.0" />
     <PackageReference Include="Bogus" Version="35.6.5" />
-    <PackageReference Include="WireMock.Net" Version="2.14.0" />
+    <PackageReference Include="WireMock.Net" Version="2.15.0" />
   </ItemGroup>
 
   <ItemGroup>

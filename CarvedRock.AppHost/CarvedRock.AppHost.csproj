@@ -5,6 +5,7 @@
     <TargetFramework>net10.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
+	<AspireUseCliBundle>true</AspireUseCliBundle>
     <UserSecretsId>f7826f9b-9e1f-4f9e-aa49-476b653d8dd8</UserSecretsId>
   </PropertyGroup>
 

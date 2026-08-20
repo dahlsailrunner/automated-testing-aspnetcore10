@@ -9,7 +9,7 @@
 
   <ItemGroup>
     <PackageReference Include="TUnit" Version="1.6*" />
-    <PackageReference Include="TUnit.Mocks" Version="1.63.0" />
+    <PackageReference Include="TUnit.Mocks" Version="1.65.38" />
   </ItemGroup>
 
   <ItemGroup>

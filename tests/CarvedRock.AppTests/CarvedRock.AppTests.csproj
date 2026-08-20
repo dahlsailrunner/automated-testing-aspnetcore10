@@ -10,9 +10,9 @@
   <ItemGroup>
     <PackageReference Include="Duende.IdentityModel" Version="8.1.0" />
     <PackageReference Include="Bogus" Version="35.6.5" />
-    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.1.0" />
-    <PackageReference Include="TUnit.Aspire" Version="1.64.6" />
-    <PackageReference Include="TUnit.Playwright" Version="1.65.0" />
+    <PackageReference Include="ModelContextProtocol.AspNetCore" Version="2.2.0" />
+    <PackageReference Include="TUnit.Aspire" Version="1.65.38" />
+    <PackageReference Include="TUnit.Playwright" Version="1.65.38" />
   </ItemGroup>
 
   <ItemGroup>
