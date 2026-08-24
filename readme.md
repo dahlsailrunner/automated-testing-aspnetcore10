@@ -110,7 +110,9 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
     (you can still create videos using the code in the Playwright docs), but I
     find this a super easy way to enable that for a test.
 * **Multiple test projects:** You may be wondering about the different test
-    projects.
+    projects. With top-level statements, referring to a `Program` can be a
+    bit ambiguous, and rather than switch from top-level statements, or fight
+    the tooling, I opted to have multiple test projects.  
 
 ### Additional Tests to Create
 
