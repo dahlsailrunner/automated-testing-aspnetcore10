@@ -95,7 +95,7 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 * Test things that matter and truly evaluate the behavior of your application
 * Make execution as fast as you need it (in general, the faster, the better)
 
-### Testing Notes
+### Notes
 
 * **Regarding `TUnit.Mocks.Http`:** If you can provide a replacement for an `HttpClient`,
     it's nice to use the TUnit library. If you just want to override the URL,
@@ -109,6 +109,8 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
     makes it easy to record a video on a Playwright test. This isn't strictly needed
     (you can still create videos using the code in the Playwright docs), but I
     find this a super easy way to enable that for a test.
+* **Multiple test projects:** You may be wondering about the different test
+    projects.
 
 ### Additional Tests to Create
 
@@ -135,7 +137,8 @@ for everything below, your coverage should be pretty close to 100%.
 
 #### AppTests
 
-**T I P !** Use the Playwright codegen tool for these!
+> [!TIP]
+> Use the Playwright `codegen` tool for these!
 
 * Check the Current Promotion page with the link area on the home
   page (will require user to log in when clicked)
