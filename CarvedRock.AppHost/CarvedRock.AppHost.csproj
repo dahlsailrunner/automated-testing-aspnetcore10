@@ -1,4 +1,4 @@
-<Project Sdk="Aspire.AppHost.Sdk/13.5.0">
+<Project Sdk="Aspire.AppHost.Sdk/13.5.2">
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
@@ -17,8 +17,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Aspire.Hosting.Kubernetes" Version="13.5.0-preview.1.26417.10" />
-    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.0" />
+    <PackageReference Include="Aspire.Hosting.Kubernetes" Version="13.5.2-preview.1.26421.6" />
+    <PackageReference Include="Aspire.Hosting.PostgreSQL" Version="13.5.2" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.MailPit" Version="13.4.0" />
     <PackageReference Include="CommunityToolkit.Aspire.Hosting.McpInspector" Version="13.4.0" />
   </ItemGroup>

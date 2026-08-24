@@ -95,6 +95,78 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 * Test things that matter and truly evaluate the behavior of your application
 * Make execution as fast as you need it (in general, the faster, the better)
 
+### Testing Notes
+
+* **Regarding `TUnit.Mocks.Http`:** If you can provide a replacement for an `HttpClient`,
+    it's nice to use the TUnit library. If you just want to override the URL,
+    then you should continue the use of WireMock.
+* **TestContainers - flaky tests?** I've had some inconsistency with TestContainers
+    and at least its PostgreSQL package on my local Windows machine, mostly with
+    intermittent errors during startup and readiness of the PostgreSQL container.
+    This may be to some corporate policy doing packet inspection on my laptop, but
+    the tests have been consistently reliable in the CI pipeline.
+* **`RecordVideo` attribute:** I created an attribute called `RecordVideo` that
+    makes it easy to record a video on a Playwright test. This isn't strictly needed
+    (you can still create videos using the code in the Playwright docs), but I
+    find this a super easy way to enable that for a test.
+
+### Additional Tests to Create
+
+Here are some additional tests that should be created to improve
+coverage - they were intentionally ommitted so that you could
+practice with creating different types of tests. If you add tests
+for everything below, your coverage should be pretty close to 100%.
+
+#### UnitTests
+
+* Field length validations (e.g. name too long)
+* Invalid `ImgUrl` property
+* Negative price for a product
+
+#### ApiTests
+
+* Use API to clear cart (both with contents and empty)
+* Verify that get product by id returns `NOT FOUND` when invalid id is passed
+* Same `NOT FOUND` response should be returned for update and delete operations with invalid id
+* Determine if possible to create a validation error on a product that isn't
+  tied to a field / property on the product.  If not, remove uncovered code
+  in the `ValidationExceptionHandler`
+* Force a bad request on an order
+
+#### AppTests
+
+**T I P !** Use the Playwright codegen tool for these!
+
+* Check the Current Promotion page with the link area on the home
+  page (will require user to log in when clicked)
+* Click the `Bad News` button on the home page - this should redirect to
+  an error page that can be validated
+* Try the UI pages for the Admin of products (create, update, delete) - both
+  with and without validation errors
+* Log in as alice (not an admin). Confirm that the Admin nav button is not
+  visible.  Also try navigating to `/admin` and verify the Access Denied page
+  is shown
+* Use the chat as an admin with `/admin set price of desert trekker to 104.21`
+  and confirm the results
+* After logging in, log out and verify the logged out page
+
+#### Extra Credit
+
+Use [Microsoft.Extentions.AI.Evaluation](https://developer.microsoft.com/blog/put-your-ai-to-the-test-with-microsoft-extensions-ai-evaluation/)
+to test the quality of chat responses for a customer chat.
+
+From a product listing page, use a prompt like the following in the
+chat:
+
+```txt
+Recommend products for a forest hike
+```
+
+The response will list three (verify count of three) products that
+could be confirmed to be real products from the original list - with
+the correct prices, names, and probably descriptions.  Modify the prompt
+and experiment with your results!
+
 ## Data and EF Core Migrations
 
 The `dotnet ef` tool is used to manage EF Core migrations.  The following command was used to create migrations (from the `CarvedRock.Data` folder).
