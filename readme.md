@@ -142,6 +142,9 @@ for everything below, your coverage should be pretty close to 100%.
 > [!TIP]
 > Use the Playwright `codegen` tool for these!
 
+* Add a test to verify that `alice` cannot use the same
+  `/admin delete product 10` prompt successfully in the chat (she's
+  not an admin and shouldn't be allowed to do this)
 * Check the Current Promotion page with the link area on the home
   page (will require user to log in when clicked)
 * Click the `Bad News` button on the home page - this should redirect to
@@ -151,8 +154,8 @@ for everything below, your coverage should be pretty close to 100%.
 * Log in as alice (not an admin). Confirm that the Admin nav button is not
   visible.  Also try navigating to `/admin` and verify the Access Denied page
   is shown
-* Use the chat as an admin with `/admin set price of desert trekker to 104.21`
-  and confirm the results
+* Use the chat as `bob` the admin with `/admin set price of desert trekker to 104.21`
+  and confirm the results (and probably verify that `alice` cannot do this)
 * After logging in, log out and verify the logged out page
 
 #### Extra Credit
