@@ -47,7 +47,7 @@ public class ApiFactory : TestWebApplicationFactory<Program>
         configurationBuilder.AddInMemoryCollection(new Dictionary<string, string?>
         {
             { "ConnectionStrings:CarvedRockPostgres",
-                        TestData.DbContainer.GetConnectionString() }
+                        TestData.ConnectionString }
         });
     }
 }

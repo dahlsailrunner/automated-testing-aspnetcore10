@@ -10,9 +10,11 @@ namespace CarvedRock.ApiTests.Utils;
 
 public class TestData : IAsyncInitializer, IAsyncDisposable
 {
-    public PostgreSqlContainer DbContainer { get; } = 
+    public PostgreSqlContainer DbContainer { get; } =
         new PostgreSqlBuilder("postgres:18.3")
             .Build();
+
+    public string ConnectionString => DbContainer.GetConnectionString() + ";SSL Mode=Disable";
 
     public List<Data.Entities.Product> InitialProducts { get; private set; } = null!;
 
@@ -33,7 +35,7 @@ public class TestData : IAsyncInitializer, IAsyncDisposable
         await DbContainer.StartAsync();
 
         var options = new DbContextOptionsBuilder<LocalContext>()
-                            .UseNpgsql(DbContainer.GetConnectionString())
+                            .UseNpgsql(ConnectionString)
                             .Options;
         var context = new LocalContext(options);
 

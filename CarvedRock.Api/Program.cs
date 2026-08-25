@@ -52,10 +52,6 @@ builder.Services.AddScoped<IOrderLogic, OrderLogic>();
 builder.AddMailKitClient("smtp");
 builder.Services.AddScoped<IOrderEmailSender, EmailService>();
 
-// var cstr = builder.Configuration.GetConnectionString("CarvedRockPostgres");
-// builder.Services.AddDbContext<LocalContext>(options =>
-//      options.UseNpgsql(cstr));
-
 builder.AddNpgsqlDbContext<LocalContext>("CarvedRockPostgres");
 
 builder.Services.AddScoped<ICarvedRockRepository, CarvedRockRepository>();
