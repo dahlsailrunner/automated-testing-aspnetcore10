@@ -5,6 +5,8 @@ using Projects;
 using TUnit.Aspire;
 using Bogus;
 
+[assembly: Retry(2, BackoffMs = 30_000)]
+
 namespace CarvedRock.AppTests.Utils;
 
 public class AppFixture : AspireFixture<CarvedRock_AppHost>
