@@ -112,7 +112,15 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 * **Multiple test projects:** You may be wondering about the different test
     projects. With top-level statements, referring to a `Program` can be a
     bit ambiguous, and rather than switch from top-level statements, or fight
-    the tooling, I opted to have multiple test projects.  
+    the tooling, I opted to have multiple test projects.
+* **Retries added for AppTest project:** I had a CI test run that failed the
+  `WebAppTests.AdminCanDeleteProductsViaChat` test with the following result:
+  `Timeout 30000ms exceeded Waiting for GetByRole(AriaRole.Textbox, new() { Name = "Username" })`.  That error is on the username field for the demo Identity
+  Server I'm using in the application.  It's likely that it was being deployed
+  or some kind of other transient error at least. By adding a [global retry
+  policy](https://tunit.dev/docs/execution/retrying#global-retry-policy)
+  these types of errors can likely be overcome in a test run without
+  triggering deeper analysis.
 
 ### Additional Tests to Create
 
