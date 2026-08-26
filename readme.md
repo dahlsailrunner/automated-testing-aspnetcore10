@@ -113,7 +113,7 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
     projects. With top-level statements, referring to a `Program` can be a
     bit ambiguous, and rather than switch from top-level statements, or fight
     the tooling, I opted to have multiple test projects.
-* **Retries added for AppTest project:** I had a CI test run that failed the
+* **Retries added for AppTest project:** I had a [CI test run](https://github.com/dahlsailrunner/automated-testing-aspnetcore10/actions/runs/32837534109) that failed the
   `WebAppTests.AdminCanDeleteProductsViaChat` test with the following result:
   `Timeout 30000ms exceeded Waiting for GetByRole(AriaRole.Textbox, new() { Name = "Username" })`.  That error is on the username field for the demo Identity
   Server I'm using in the application.  It's likely that it was being deployed
