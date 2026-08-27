@@ -122,6 +122,27 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
   these types of errors can likely be overcome in a test run without
   triggering deeper analysis.
 
+#### Performance Tests
+
+A "hello, world" style [NBomber](https://nbomber.com/) example is included in this repo - it's in the
+`tests/PerformanceTests` folder.
+
+These are not specifically "tests" - but they could be made into tests by adding
+to a project with TUnit in it and using [Assertions and Thresholds](https://nbomber.com/docs/nbomber/asserts_and_thresholds).
+
+To run them, first run the Aspire solution, and then run the NBomber test.
+
+```bash
+aspire run --detach --configuration Release
+cd tests/PerformanceTests
+dotnet run --configuration Release
+
+aspire stop ## to stop the Aspire app when the test is done
+```
+
+That will create reports in the `/tests/PerformanceTests/reports` directory for you
+to review (in addition to the console output).
+
 ### Additional Tests to Create
 
 Here are some additional tests that should be created to improve
