@@ -18,6 +18,18 @@ Key concepts include:
 
 You need the [Aspire prerequisites](https://aspire.dev/get-started/prerequisites/).
 
+To run the tests and look at the reports that get created, run the following command:
+
+```bash
+./test-with-coverage.ps1 -ShowReports
+```
+
+When this completes, three TUnit reports will open in the browser, as well as a code
+coverage report.
+
+Also, the `tests/CarvedRock.AppTests/bin/Debug/Net10.0/playwright-artifacts` folder
+will have a screenshot and some videos that were captured during Playwright tests.
+
 ### VS Code Setup
 
 You need the following extension:
@@ -100,15 +112,12 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
 * **Regarding `TUnit.Mocks.Http`:** If you can provide a replacement for an `HttpClient`,
     it's nice to use the TUnit library. If you just want to override the URL,
     then you should continue the use of WireMock.
-* **TestContainers - flaky tests?** I've had some inconsistency with TestContainers
-    and at least its PostgreSQL package on my local Windows machine, mostly with
-    intermittent errors during startup and readiness of the PostgreSQL container.
-    This may be to some corporate policy doing packet inspection on my laptop, but
-    the tests have been consistently reliable in the CI pipeline.
 * **`RecordVideo` attribute:** I created an attribute called `RecordVideo` that
     makes it easy to record a video on a Playwright test. This isn't strictly needed
     (you can still create videos using the code in the Playwright docs), but I
-    find this a super easy way to enable that for a test.
+    find this a super easy way to enable that for a test.  And some additional "plumbing"
+    code was added to rename the files to reflect the name of the test rather than using
+    a non-meaningful UUID or something like that.
 * **Multiple test projects:** You may be wondering about the different test
     projects. With top-level statements, referring to a `Program` can be a
     bit ambiguous, and rather than switch from top-level statements, or fight
@@ -121,6 +130,10 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
   policy](https://tunit.dev/docs/execution/retrying#global-retry-policy)
   these types of errors can likely be overcome in a test run without
   triggering deeper analysis.
+* **Playwright parallelization:** If you get to having a higher number of
+  Playwright test, these can be resource intensive on the machine running the
+  tests - especially in CI pipelines.  The `BrowserParallelLimit` usage was added
+  to prevent test failures due to CI machine limitations.
 
 #### Performance Tests
 
