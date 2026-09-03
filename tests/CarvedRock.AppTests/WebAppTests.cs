@@ -1,5 +1,6 @@
 namespace CarvedRock.AppTests;
 
+[ParallelLimiter<BrowserParallelLimit>]
 public partial class WebAppTests : CustomPageTest
 {
     [Test]
@@ -73,7 +74,7 @@ public partial class WebAppTests : CustomPageTest
         await Page.GetByRole(AriaRole.Link, new() { Name = "Sign in" }).ClickAsync();
 
         await Page.Login("bob", "bob");  // admin
-        
+
         await Page.GetByRole(AriaRole.Link, new() { Name = "Footwear" }).ClickAsync();
 
         await Page.GetByRole(AriaRole.Textbox, new() { Name = "Describe your activity" })
