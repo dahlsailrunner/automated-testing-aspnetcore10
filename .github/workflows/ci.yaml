@@ -48,28 +48,15 @@ jobs:
             --coverage-settings testconfig.json \
             --report-trx
 
-      - name: Upload test results
-        if: always() # Run even if tests fail
-        uses: actions/upload-artifact@v7
-        with:
-          name: raw-test-results
-          path: ./TestResults/*
-
-      - name: Upload merged report
-        if: always()
-        uses: actions/upload-artifact@v7
-        with:
-          name: merged-test-report
-          path: ${{ runner.temp }}/tunit-aggregate/**/merged-report.html
-
-      - name: Upload Playwright artifacts
-        if: always() # Run even if tests fail
-        uses: actions/upload-artifact@v7
-        with:
-          name: playwright-artifacts
-          path: ./tests/CarvedRock.AppTests/bin/Release/net10.0/playwright-artifacts/*
+      # - name: Upload test results
+      #   if: always() # Run even if tests fail
+      #   uses: actions/upload-artifact@v7
+      #   with:
+      #     name: raw-test-results
+      #     path: ./TestResults/*
 
       - name: ReportGenerator
+        if: always() # Run even if tests fail
         uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
         with:
           reports: "./TestResults/*.cobertura.xml" # REQUIRED # The coverage reports that should be parsed (separated by semicolon). Globbing is supported.
@@ -78,11 +65,20 @@ jobs:
           tag: "${{ github.run_number }}_${{ github.run_id }}" # Optional tag or build version.
           toolpath: "reportgeneratortool" # Default directory for installing the dotnet tool.
 
-      - name: Upload coverage report artifact
+      - name: Stage combined artifacts
+        if: always()
+        run: |
+          mkdir -p combined-report/coverage combined-report/merged-report combined-report/playwright
+          cp -r coveragereport/. combined-report/coverage/ 2>/dev/null || true
+          cp -r ${{ runner.temp }}/tunit-aggregate/**/merged-report.html combined-report/merged-report/ 2>/dev/null || true
+          cp -r ./tests/CarvedRock.AppTests/bin/Release/net10.0/playwright-artifacts/. combined-report/playwright/ 2>/dev/null || true
+
+      - name: Upload combined test artifacts
+        if: always()
         uses: actions/upload-artifact@v7
         with:
-          name: coverage-report # Artifact name
-          path: coveragereport # Directory containing files to upload
+          name: test-artifacts
+          path: combined-report
 
       - name: Add comment to PR # Only applicable if 'MarkdownSummaryGithub' or one of the other Markdown report types is generated
         if: github.event_name == 'pull_request'
