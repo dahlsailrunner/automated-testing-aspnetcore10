@@ -67,6 +67,70 @@ public partial class WebAppTests : CustomPageTest
     }
 
     [Test]
+    // alice's cart is shared backend state across every test that logs in as her -
+    // run only after CustomerCanPlaceOrderAndGetEmail has cleared it via checkout.
+    [DependsOn(nameof(CustomerCanPlaceOrderAndGetEmail))]
+    public async Task CustomerCanCancelOrderFromCartPage()
+    {
+        await Page.GotoAsync(WebAppUrl);
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Footwear" }).ClickAsync();
+
+        await Page.Login("alice", "alice");
+
+        await Page.GetByRole(AriaRole.Row, new() { Name = "Desert Walker" })
+                    .GetByRole(AriaRole.Button).ClickAsync();
+
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Cart (1)" }).ClickAsync();
+
+        await Expect(Page.Locator("tbody")).ToContainTextAsync("Desert Walker");
+
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Cancel Order / Clear Cart" })
+                    .ClickAsync();
+
+        await Expect(Page.GetByText("GET A GRIP")).ToBeVisibleAsync(); // redirected home
+        await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Cart (0)" })).ToBeVisibleAsync();
+    }
+
+    [Test]
+    [DependsOn(nameof(CustomerCanCancelOrderFromCartPage))]
+    public async Task CustomerCanCancelOrderFromCheckoutPage()
+    {
+        await Page.GotoAsync(WebAppUrl);
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Footwear" }).ClickAsync();
+
+        await Page.Login("alice", "alice");
+
+        await Page.GetByRole(AriaRole.Row, new() { Name = "Desert Walker" })
+                    .GetByRole(AriaRole.Button).ClickAsync();
+
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Cart (1)" }).ClickAsync();
+
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Checkout" }).ClickAsync();
+
+        await Expect(Page.Locator("tbody")).ToContainTextAsync("Desert Walker");
+
+        await Page.GetByRole(AriaRole.Button, new() { Name = "Cancel Order / Clear Cart" })
+                    .ClickAsync();
+
+        await Expect(Page.GetByText("GET A GRIP")).ToBeVisibleAsync(); // redirected home
+        await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Cart (0)" })).ToBeVisibleAsync();
+    }
+
+    [Test]
+    public async Task NavigatingToListingWithoutCategoryShowsErrorPage()
+    {
+        // no "cat" query string - distinct from the "Bad News" nav link (cat=badnews),
+        // which is its own exercise; this hits Listing.cshtml.cs's other error path
+        var listingUrl = new Uri(new Uri(WebAppUrl), "Listing").ToString();
+
+        await Page.GotoAsync(listingUrl);
+        await Page.Login("alice", "alice"); // page requires auth; login redirects back here
+
+        await Expect(Page.GetByText("An error occurred while processing your request."))
+                    .ToBeVisibleAsync();
+    }
+
+    [Test]
     [RecordVideo]
     public async Task AdminCanDeleteProductsViaChat()
     {
