@@ -24,7 +24,11 @@ public class CartApiTests : ApiTestsBase
         var client = Factory.CreateClient();
         client.AddCustomerAuthHeaders();
 
-        var randomProduct = TestData.GeneralFaker.PickRandom(TestData.InitialProducts);
+        // TestData.InitialProducts is a session-wide snapshot taken before any test runs;
+        // ProductApiTests.DeleteProductAsAdmin_Succeeds deletes product 1 from the real
+        // (shared) database, so exclude it here or a random pick can 404 the POST.
+        var randomProduct = TestData.GeneralFaker.PickRandom(
+            TestData.InitialProducts.Where(p => p.Id != 1));
 
         var response = await client.PostAsJsonAsync("/cart",
                                 new CartItem(randomProduct.Id, 1));
@@ -55,7 +59,11 @@ public class CartApiTests : ApiTestsBase
         client.DefaultRequestHeaders.Add("X-Test-idp", "CarvedRock");
         client.DefaultRequestHeaders.Add("X-Test-email", "incrementtester@someplace.com");
 
-        var randomProduct = TestData.GeneralFaker.PickRandom(TestData.InitialProducts);
+        // TestData.InitialProducts is a session-wide snapshot taken before any test runs;
+        // ProductApiTests.DeleteProductAsAdmin_Succeeds deletes product 1 from the real
+        // (shared) database, so exclude it here or a random pick can 404 the POST.
+        var randomProduct = TestData.GeneralFaker.PickRandom(
+            TestData.InitialProducts.Where(p => p.Id != 1));
 
         await client.PostAsJsonAsync("/cart", new CartItem(randomProduct.Id, 1));
         var secondResponse = await client.PostAsJsonAsync("/cart", new CartItem(randomProduct.Id, 2));
