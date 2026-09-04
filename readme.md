@@ -134,6 +134,11 @@ dotnet tool install -g dotnet-reportgenerator-globaltool
   Playwright test, these can be resource intensive on the machine running the
   tests - especially in CI pipelines.  The `BrowserParallelLimit` usage was added
   to prevent test failures due to CI machine limitations.
+* **Localization dangers:** Especially on build machines, an `en-US` default is
+  generally not in place. So if you're looking for currency strings, or other
+  number or date formats, you may need to take some measures to be explicit
+  about that. This application took a shortcut and is formatting validation
+  errors in the application code with explicit localization.
 
 #### Performance Tests
 
