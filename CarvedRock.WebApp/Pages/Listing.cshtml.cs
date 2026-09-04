@@ -1,4 +1,5 @@
 using CarvedRock.Core;
+using Microsoft.AspNetCore.Antiforgery;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.RazorPages;
 using System.Text;
@@ -8,11 +9,13 @@ namespace CarvedRock.WebApp.Pages;
 public partial class ListingModel(IProductService productService,
     ICartService cartService,
     CarvedRockMetrics metrics,
-    IHttpClientFactory httpClientFactory) : PageModel
+    IHttpClientFactory httpClientFactory,
+    IAntiforgery antiforgery) : PageModel
 {
     public List<ProductModel> Products { get; set; } = [];
     public string CategoryName { get; set; } = "";
     public string Category { get; set; } = "";
+    public string AntiforgeryToken { get; set; } = "";
 
     public async Task OnGetAsync()
     {
@@ -28,6 +31,9 @@ public partial class ListingModel(IProductService productService,
                            Products.First().Category[1..];
         }
 
+        // exposed to the chat JS so its JSON POST can carry the token via the X-CSRF-TOKEN header
+        AntiforgeryToken = antiforgery.GetAndStoreTokens(HttpContext).RequestToken!;
+
         metrics.ListingPageWasViewed();
     }
 
@@ -37,7 +43,7 @@ public partial class ListingModel(IProductService productService,
         return RedirectToPage("Listing", new { cat });
     }
 
-    public async Task<IActionResult> OnGetChat(string message, CancellationToken cxl)
+    public async Task<IActionResult> OnPostChat([FromBody] ChatRequest request, CancellationToken cxl)
     {
         Response.Headers.Append("Content-Type", "text/event-stream");
         Response.Headers.Append("Cache-Control", "no-cache");
@@ -55,11 +61,16 @@ public partial class ListingModel(IProductService productService,
             client.BaseAddress = new("https://agent");
         }
 
+        var agentRequest = new HttpRequestMessage(HttpMethod.Post, "Agent")
+        {
+            Content = JsonContent.Create(new
+            {
+                message = request.Message ?? string.Empty,
+                history = request.History
+            })
+        };
 
-        var request = new HttpRequestMessage(HttpMethod.Get,
-            $"Agent?message={Uri.EscapeDataString(message ?? string.Empty)}");
-
-        var apiResponse = await client.SendAsync(request, HttpCompletionOption.ResponseHeadersRead, cxl);
+        var apiResponse = await client.SendAsync(agentRequest, HttpCompletionOption.ResponseHeadersRead, cxl);
         apiResponse.EnsureSuccessStatusCode();
 
         await using var stream = await apiResponse.Content.ReadAsStreamAsync(cxl);
@@ -79,4 +90,13 @@ public partial class ListingModel(IProductService productService,
         await Response.Body.FlushAsync(cxl);
         return new EmptyResult();
     }
+
+    public async Task<IActionResult> OnGetCartCount()
+    {
+        var count = await cartService.GetCartItemCountAsync();
+        return new JsonResult(new { count });
+    }
 }
+
+public record ChatTurnModel(string Role, string Content);
+public record ChatRequest(string? Message, List<ChatTurnModel>? History);

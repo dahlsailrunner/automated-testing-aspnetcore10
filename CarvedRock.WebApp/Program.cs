@@ -43,6 +43,7 @@ builder.Services.AddTransient<IClaimsTransformation, AdminClaimsTransformation>(
 builder.Services.AddHttpContextAccessor();
 
 builder.Services.AddRazorPages();
+builder.Services.AddAntiforgery(options => options.HeaderName = "X-CSRF-TOKEN"); // fetch-based chat POST sends the token via this header instead of a form field
 builder.Services.AddHttpClient();
 builder.Services.AddHttpClient<IProductService, ProductService>();
 builder.Services.AddHttpClient<ICartService, CartService>();

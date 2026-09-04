@@ -71,10 +71,8 @@ if (app.Environment.IsDevelopment())
 app.UseAuthentication();
 app.UseAuthorization();
 
-app.MapGet("/agent", async (string message, Agent agent, CancellationToken cancellationToken) =>
-{
-    return agent.GetAgentResponse(message, cancellationToken);
-});
+app.MapPost("/agent", (AgentChatRequest request, Agent agent, CancellationToken cancellationToken) =>
+    agent.GetAgentResponse(request.Message, request.History, cancellationToken));
 
 app.Run();
 

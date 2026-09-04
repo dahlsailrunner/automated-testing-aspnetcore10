@@ -1,9 +1,11 @@
 ﻿@page
 @model CarvedRock.WebApp.Pages.ListingModel
 
+<meta name="csrf-token" content="@Model.AntiforgeryToken" />
 <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script type="text/javascript">
-    let sseSource = null;
+    let chatAbortController = null;
+    let chatHistory = []; // { role: "user" | "assistant", content: string } - echoed back each turn so follow-ups (e.g. "yes, add it") have context
 
     function normalizeStreamChunk(raw) {
         // pretty clumsy way of this rendering
@@ -12,45 +14,84 @@
         return raw;
     }
 
-    function startChatStream() {
+    async function startChatStream() {
         const input = document.getElementById("chatInput");
         const msg = input.value.trim();
         if (!msg) return;
 
         appendMessage("user", msg);
         input.value = "";
-        stopChatStream(); // ensure previous closed
+        stopChatStream(); // ensure previous request aborted
 
-        const url = `/Listing?handler=Chat&message=${encodeURIComponent(msg)}`;
-        sseSource = new EventSource(url);
-
-        let buffer = "";
+        chatAbortController = new AbortController();
         let assistantDiv = appendMessage("assistant", "_Thinking..._");
+        let buffer = "";
 
-        sseSource.onmessage = (e) => {
-            const delta = normalizeStreamChunk(e.data);
+        try {
+            const csrfToken = document.querySelector('meta[name="csrf-token"]').content;
+            const response = await fetch("/Listing?handler=Chat", {
+                method: "POST",
+                headers: { "Content-Type": "application/json", "X-CSRF-TOKEN": csrfToken },
+                body: JSON.stringify({ message: msg, history: chatHistory }),
+                signal: chatAbortController.signal
+            });
 
-            // Drop a leading empty token if buffer is empty
-            if (buffer.length === 0 && delta.trim().length === 0) return;
+            const reader = response.body.getReader();
+            const decoder = new TextDecoder();
+            let sseBuffer = "";
+            let done = false;
 
-            buffer += delta;
-            assistantDiv.querySelector(".chat-text").innerHTML = marked.parse(buffer);
-            scrollChat();
-        };
+            while (!done) {
+                const result = await reader.read();
+                done = result.done;
+                if (result.value) {
+                    sseBuffer += decoder.decode(result.value, { stream: true });
 
-        sseSource.addEventListener("end", () => {
-            stopChatStream();
-        });
+                    // SSE frames are separated by a blank line
+                    let frames = sseBuffer.split("\n\n");
+                    sseBuffer = frames.pop(); // last one may be incomplete
 
-        sseSource.onerror = () => {
-            stopChatStream();
-        };
+                    for (const frame of frames) {
+                        if (frame.startsWith("event: end")) {
+                            done = true;
+                            break;
+                        }
+                        if (frame.startsWith("data:")) {
+                            const delta = normalizeStreamChunk(frame.slice(5).trim());
+                            if (buffer.length === 0 && delta.trim().length === 0) continue;
+                            buffer += delta;
+                            assistantDiv.querySelector(".chat-text").innerHTML = marked.parse(buffer);
+                            scrollChat();
+                        }
+                    }
+                }
+            }
+        } catch (err) {
+            if (err.name !== "AbortError") console.error(err);
+        } finally {
+            chatHistory.push({ role: "user", content: msg });
+            if (buffer) chatHistory.push({ role: "assistant", content: buffer });
+            chatAbortController = null;
+            refreshCartCount();
+        }
     }
 
     function stopChatStream() {
-        if (sseSource) {
-            sseSource.close();
-            sseSource = null;
+        if (chatAbortController) {
+            chatAbortController.abort();
+            chatAbortController = null;
+        }
+    }
+
+    async function refreshCartCount() {
+        try {
+            const response = await fetch("/Listing?handler=CartCount");
+            if (!response.ok) return;
+            const data = await response.json();
+            const cartLink = document.getElementById("carvedrockcart");
+            if (cartLink) cartLink.textContent = `Cart (${data.count})`;
+        } catch (err) {
+            console.error(err);
         }
     }
 

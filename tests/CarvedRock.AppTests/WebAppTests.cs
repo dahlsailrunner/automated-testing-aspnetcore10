@@ -153,4 +153,55 @@ public partial class WebAppTests : CustomPageTest
                                 .FirstOrDefaultAsync(p => p.Id == 20 || p.Id == 23);
         await Assert.That(actualProduct).IsNull();
     }
+
+    [Test]
+    [RecordVideo]
+    // bob (admin), not alice - alice's cart is shared state across the DependsOn chain above;
+    // bob's cart isn't touched by any other test, so this one needs no ordering.
+    public async Task CustomerCanAddRecommendedProductToCartViaChat()
+    {
+        await Page.GotoAsync(WebAppUrl);
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Sign in" }).ClickAsync();
+
+        await Page.Login("bob", "bob");
+
+        // bob's cart is real, persistent state (unlike ApiTests' per-session Testcontainers DB,
+        // this AppHost's Postgres survives across separate test runs) - start from a known-empty
+        // cart so the "Cart (1)" assertion below is reliable no matter how many times this ran before.
+        await Page.GotoAsync(new Uri(new Uri(WebAppUrl), "Cart").ToString());
+        var clearCartButton = Page.GetByRole(AriaRole.Button, new() { Name = "Cancel Order / Clear Cart" });
+        if (await clearCartButton.IsVisibleAsync())
+        {
+            await clearCartButton.ClickAsync();
+            await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Cart (0)" })).ToBeVisibleAsync();
+        }
+
+        await Page.GetByRole(AriaRole.Link, new() { Name = "Footwear" }).ClickAsync();
+
+        var chatInput = Page.GetByRole(AriaRole.Textbox, new() { Name = "Describe your activity" });
+        var sendButton = Page.GetByRole(AriaRole.Button, new() { Name = "Send" });
+
+        await chatInput.FillAsync("Tell me about the Desert Walker boots.");
+        await sendButton.ClickAsync();
+        await Expect(Page.Locator("#chatMessages"))
+                .ToContainTextAsync("Desert Walker", options: new() { Timeout = 15_000 });
+
+        await chatInput.FillAsync("Yes, please add the Desert Walker to my cart.");
+        await sendButton.ClickAsync();
+        await Expect(Page.Locator("#chatMessages"))
+                .ToContainTextAsync("added",  // be careful - non-deterministic wording!!
+                    options: new() { Timeout = 15_000 });
+
+        // hard assertions: the cart button text updates without a page reload, and the DB row exists
+        await Expect(Page.GetByRole(AriaRole.Link, new() { Name = "Cart (1)" }))
+                .ToBeVisibleAsync(new() { Timeout = 15_000 });
+
+        var desertWalker = await Fixture.TestDbContext.Products
+                                .FirstOrDefaultAsync(p => p.Name == "Desert Walker");
+        await Assert.That(desertWalker).IsNotNull();
+
+        var cartItem = await Fixture.TestDbContext.CartItems
+                                .FirstOrDefaultAsync(c => c.ProductId == desertWalker!.Id);
+        await Assert.That(cartItem).IsNotNull();
+    }
 }
