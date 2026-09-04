@@ -6,7 +6,7 @@ Remove-Item -Recurse -Force -ErrorAction SilentlyContinue TestResults, coverager
 
 dotnet test --coverage --coverage-output-format cobertura --coverage-settings testconfig.json
 
-reportgenerator -reports:TestResults/*.cobertura.xml -targetdir:coveragereport
+reportgenerator -reports:TestResults/*.cobertura.xml -targetdir:coveragereport -reporttypes:"Html;TextSummary;"
 
 if ($ShowReports) {
     Invoke-Item ./coveragereport/index.html

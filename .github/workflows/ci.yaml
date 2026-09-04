@@ -48,13 +48,6 @@ jobs:
             --coverage-settings testconfig.json \
             --report-trx
 
-      # - name: Upload test results
-      #   if: always() # Run even if tests fail
-      #   uses: actions/upload-artifact@v7
-      #   with:
-      #     name: raw-test-results
-      #     path: ./TestResults/*
-
       - name: ReportGenerator
         if: always() # Run even if tests fail
         uses: danielpalme/ReportGenerator-GitHub-Action@5.5.11
@@ -89,26 +82,3 @@ jobs:
       - name: Publish coverage in build summary # Only applicable if 'MarkdownSummaryGithub' or one of the other Markdown report types is generated
         run: cat coveragereport/SummaryGithub.md >> $GITHUB_STEP_SUMMARY # Adjust path and filename if necessary
 
-
-  # publish-results:
-  #     name: Publish Test Results
-  #     needs: test
-  #     runs-on: ubuntu-latest
-  #     if: always()
-  #     permissions:
-  #         contents: read
-  #         issues: read
-  #         checks: write
-  #         pull-requests: write
-
-  #     steps:
-  #         - name: Download all test results
-  #           uses: actions/download-artifact@v4
-  #           with:
-  #               pattern: test-results
-  #               path: ./TestResults
-
-  #         - name: Publish test results
-  #           uses: EnricoMi/publish-unit-test-result-action@v2
-  #           with:
-  #               files: ./TestResults/**/*.trx

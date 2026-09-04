@@ -35,12 +35,19 @@ dotnet ef migrations add <Name> -s ../CarvedRock.Api
 
 `global.json` sets `test.runner` to **Microsoft.Testing.Platform**, so `dotnet test` accepts platform options directly (`--coverage`, `--coverage-settings`, `--treenode-filter`, `--report-trx`). CI passes them after a `--` separator; the local script passes them inline. Both work.
 
-Raw code coverage files are created in the `TestResults` folder under
-the glob pattern of `*.cobertura.xml`.
+Raw code coverage files are created in the `TestResults` folder, one per test
+project, guid-named: `TestResults/*.cobertura.xml` (the guid doesn't identify
+the project — open the file or use the rollup below instead of grepping these directly).
 
-TUnit test reports are created in the `TestResults` folder, and JSON files
-contain the information used in them -- those JSON files use the glob pattern
-`*.tunit-report.json`.
+TUnit test reports are created in the `TestResults` folder, one JSON + one HTML
+per project, named `<ProjectName>-<os>-net10.0.tunit-report.json` /
+`-report.html` (e.g. `CarvedRock.ApiTests-windows-net10.0.tunit-report.json`) —
+glob as `TestResults/*.tunit-report.json` for the machine-readable results.
+
+`test-with-coverage.ps1` runs `reportgenerator` with `Html;TextSummary`,
+so after a run `coveragereport/Summary.txt` has a short per-assembly/class
+coverage rollup — read that first instead of the cobertura XML or opening the
+HTML report; fall back to the XML only when line-level detail is needed.
 
 Coverage reporting needs `dotnet tool install -g dotnet-reportgenerator-globaltool`. Exclusions (auto-properties, EF migrations, Mapperly output, model/entity files, MailKit.Client) live in `testconfig.json`.
 

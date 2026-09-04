@@ -217,6 +217,57 @@ could be confirmed to be real products from the original list - with
 the correct prices, names, and probably descriptions.  Modify the prompt
 and experiment with your results!
 
+## Agentic Workflows
+
+### Setup
+
+Set up your favorite coding agent and initialize the repo for it - this usually
+means you will end up with `claude.md` or `agents.md` in the root folder of the repo.
+
+Then run the `aspire agent init` command from a terminal.  This will setup
+the Aspire skills that an agent can take advantage of to understand and interact
+with your app more completely and accurately.  For more information about this,
+check the [Aspire docs on coding agents and workflows](https://aspire.dev/get-started/ai-coding-agents/).
+
+Finally you probably should update your `claude.md` or `agents.md` to tell the
+agent about the test setup - running the tests is a single script (`test-with-coverage.ps1`),
+and coverage details can be seen in the cobertura files and test results in the
+JSON files -- both in the `TestResults` directory.
+
+### Planning and Implementing Features
+
+Make sure that updated tests are part of the implementation plan for any
+feature, and that running the updated tests is non-negotiable.  You can
+even ask for any new Playwright tests to be recorded.
+
+Look at recent commits for the plan and results of this prompt:
+
+```txt
+Need to plan the implementation of a new feature: the AI chat accessible
+from the listing page should be able to add a recommended item or items
+to the cart.  When the chat provides the recommendations, it should have a
+way to ask a follow up question about whether they would like any
+of the items added to the cart, and if the user says yes in some way,
+then the appropriate items should be added to the cart. Make sure that
+the text on the cart button is updated to reflect the added item. A playwright
+test or test (with a video recording) should be created to verify
+the new functionality.  Please create a plan for this work that I can
+review and save it in the repo so that I can edit manually if needed.
+```
+
+### Things to Try
+
+#### Improve Test Coverage
+
+* Improve coverage by addressing some or all of the [Additional Tests to Create](#additional-tests-to-create) above
+
+#### Implement New Features
+
+* Add admin ui for reviewing placed orders
+* Add ability to see changes to products made by admins - audit log
+* Add ability for admins to create promotions / sales / discounts temporarily for certain products
+* Add support for guest (anonymous) checkout
+
 ## Data and EF Core Migrations
 
 The `dotnet ef` tool is used to manage EF Core migrations.  The following command was used to create migrations (from the `CarvedRock.Data` folder).
