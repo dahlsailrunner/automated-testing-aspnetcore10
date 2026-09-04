@@ -272,6 +272,8 @@ review and save it in the repo so that I can edit manually if needed.
 * Add ability to see changes to products made by admins - audit log
 * Add ability for admins to create promotions / sales / discounts temporarily for certain products
 * Add support for guest (anonymous) checkout
+* Make the chat widget more "global" once you're logged in - so that navigating
+  from page to page and refreshing a page don't lose you current history
 
 ## Data and EF Core Migrations
 
