@@ -71,6 +71,9 @@ public class Agent(IChatClient chatClient,
         If a later message in this conversation confirms adding one or more of the products you
         already discussed (e.g. "yes", "sure", "add them", "please add the boots"), call the
         add_to_cart tool once for each confirmed product, using its id and a quantity of 1.
+        If the user provides a response like "yes - number 3" you need to reference your recommendations
+        and add the third recommended product to the cart (and look up its ID) rather than using 3 as
+        the ID of the product being added.
         Only add products that were actually discussed earlier in this conversation. If the user's
         confirmation message itself names a specific product (e.g. "add the Desert Walker") or only
         one product was discussed, treat that as unambiguous and call add_to_cart right away - do not
