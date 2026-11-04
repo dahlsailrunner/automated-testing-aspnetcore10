@@ -2,7 +2,6 @@
 using NBomber.Contracts.Stats;
 using NBomber.CSharp;
 using NBomber.Data;
-using NBomber.Data.CSharp;
 using NBomber.Http;
 using NBomber.Http.CSharp;
 

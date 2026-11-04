@@ -8,8 +8,8 @@
   </PropertyGroup>
   
   <ItemGroup>
-    <PackageReference Include="NBomber" Version="6.6.0" />
-    <PackageReference Include="NBomber.Data" Version="6.1.1" />
+    <PackageReference Include="NBomber" Version="6.7.1" />
+    <PackageReference Include="NBomber.Data" Version="6.2.0" />
     <PackageReference Include="NBomber.Http" Version="6.2.1" />
     <PackageReference Include="Duende.IdentityModel" Version="8.1.0" />
   </ItemGroup>
